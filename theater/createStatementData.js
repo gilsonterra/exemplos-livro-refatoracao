@@ -32,7 +32,7 @@ function createStatementData(invoice, plays) {
 }
 
 function createPerformanceCalculator(aPerformance, aPlay) {
-    switch(aPlay.type){
+    switch (aPlay.type) {
         case 'tragedy': return new TragedyCalculator(aPerformance, aPlay);
         case 'comedy': return new ComedyCalculator(aPerformance, aPlay);
         default: throw new Error(`unknwo type: ${aPlay.type}`);
@@ -40,39 +40,16 @@ function createPerformanceCalculator(aPerformance, aPlay) {
 }
 
 class PerformanceCalculator {
-    constructor(aPerformance, aPlay){
+    constructor(aPerformance, aPlay) {
         this.performance = aPerformance;
         this.play = aPlay;
     }
 
-    get amount(){
-        let result = 0;
-        switch (this.play.type) {
-            case "tragedy":
-                result = 40000;
-                if (this.performance.audience > 30) {
-                    result += 1000 * (this.performance.audience - 30);
-                }
-                break;
-
-            case "comedy": {
-                result = 30000;
-                if (this.performance.audience > 20) {
-                    result += 10000 + 500 * (this.performance.audience - 20);
-                }
-                result += 300 * this.performance.audience;
-                break;
-            }
-
-            default: {
-                throw new Error(`unknow type ${this.play.type}`);
-            }
-        }
-
-        return result;
+    get amount() {
+        throw new Error('subclass responsability');
     }
 
-    get volumeCredits(){
+    get volumeCredits() {
         let result = 0;
         result += Math.max(this.performance.audience - 30, 0);
         if ("comedy" === this.play.type) {
@@ -84,11 +61,27 @@ class PerformanceCalculator {
 }
 
 class TragedyCalculator extends PerformanceCalculator {
+    get amount() {
+        let result = 40000;
 
+        if (this.performance.audience > 30) {
+            result += 1000 * (this.performance.audience - 30);
+        }
+
+        return result;
+    }
 }
 
-class ComedyCalculator extends PerformanceCalculator{
+class ComedyCalculator extends PerformanceCalculator {
+    get amount() {
+        let result = 30000;
+        if (this.performance.audience > 20) {
+            result += 10000 + 500 * (this.performance.audience - 20);
+        }
+        result += 300 * this.performance.audience;
 
+        return result;
+    }
 }
 
 module.exports = createStatementData;
