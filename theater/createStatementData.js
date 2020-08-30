@@ -1,14 +1,6 @@
 
 function createStatementData(invoice, plays) {
-    const statementData = {};
-    statementData.customer = invoice.customer;
-    statementData.performances = invoice.performances.map(enrichPerformance);
-    statementData.totalAmount = totalAmount(statementData);
-    statementData.totalVolumeCredits = totalVolumeCredits(statementData);
-
-    return statementData;
-
-    function enrichPerformance(aPerformance) {
+    const enrichPerformance = (aPerformance) => {
         const calculator = createPerformanceCalculator(aPerformance, playFor(aPerformance));
         const result = Object.assign({}, aPerformance);
 
@@ -17,18 +9,17 @@ function createStatementData(invoice, plays) {
         result.volumeCredits = calculator.volumeCredits;
         return result;
     }
+    const playFor = (aPerformance) => plays[aPerformance.playID];
+    const totalAmount = (data) => data.performances.reduce((total, perf) => total + perf.amount, 0);
+    const totalVolumeCredits = (data) => data.performances.reduce((total, perf) => total + perf.volumeCredits, 0);
 
-    function playFor(aPerformance) {
-        return plays[aPerformance.playID];
-    }
+    const statementData = {};
+    statementData.customer = invoice.customer;
+    statementData.performances = invoice.performances.map(enrichPerformance);
+    statementData.totalAmount = totalAmount(statementData);
+    statementData.totalVolumeCredits = totalVolumeCredits(statementData);
 
-    function totalAmount(data) {
-        return data.performances.reduce((total, perf) => total + perf.amount, 0);
-    }
-
-    function totalVolumeCredits(data) {
-        return data.performances.reduce((total, perf) => total + perf.volumeCredits, 0);
-    }
+    return statementData;
 }
 
 function createPerformanceCalculator(aPerformance, aPlay) {
