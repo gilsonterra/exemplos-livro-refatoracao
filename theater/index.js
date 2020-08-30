@@ -8,22 +8,40 @@ function statement(invoice, plays) {
 
     for (let perf of invoice.performances) {
         const play = plays[perf.playID];
-        let thisAmount = 0;
+        let thisAmount = amountFor(perf, play);
 
+        // soma créditos por volume
+        volumeCredits += Math.max(perf.audience - 30, 0);
+        // coma um crédito extra para cada 10 espectadores de comédia
+        if ("comedy" === play.type) {
+            volumeCredits += Math.floor(perf.audience / 5);
+        }
+
+        // exibe a linha para esta requisição
+        result += `${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
+        totalAmount += thisAmount;
+    }
+
+    result += `Amount owed is ${format(totalAmount / 100)}\n`;
+    result += `You earned ${volumeCredits} credits.\n`;
+    return result;
+
+    function amountFor(aPerformance, play) {
+        let result = 0;
         switch (play.type) {
             case "tragedy":
-                thisAmount = 40000;
-                if (perf.audience > 30) {
-                    thisAmount += 1000 * (perf.audience - 30);
+                result = 40000;
+                if (aPerformance.audience > 30) {
+                    result += 1000 * (aPerformance.audience - 30);
                 }
                 break;
 
             case "comedy": {
-                thisAmount = 30000;
-                if (perf.audience > 20) {
-                    thisAmount += 10000 + 500 * (perf.audience - 20);
+                result = 30000;
+                if (aPerformance.audience > 20) {
+                    result += 10000 + 500 * (aPerformance.audience - 20);
                 }
-                thisAmount += 300 * perf.audience;
+                result += 300 * aPerformance.audience;
                 break;
             }
 
@@ -32,21 +50,8 @@ function statement(invoice, plays) {
             }
         }
 
-        // soma créditos por volume
-        volumeCredits += Math.max(perf.audience - 30, 0);
-        // coma um crédito extra para cada 10 espectadores de comédia
-        if("comedy" === play.type){
-            volumeCredits += Math.floor(perf.audience/5);
-        }
-
-        // exibe a linha para esta requisição
-        result += `${play.name}: ${format(thisAmount/100)} (${perf.audience} seats)\n`;
-        totalAmount += thisAmount;
+        return result;
     }
-
-    result += `Amount owed is ${format(totalAmount/100)}\n`;
-    result += `You earned ${volumeCredits} credits.\n`;
-    return result;
 }
 
 
