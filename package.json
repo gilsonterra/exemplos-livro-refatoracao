@@ -1,0 +1,23 @@
+{
+  "name": "exemplos-livro-refatoracao",
+  "version": "1.0.0",
+  "description": "Exemplos do Livro Refatoração 2º Edição - Martin Fowler",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"        
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gilsonterra/exemplos-livro-refatoracao.git"
+  },
+  "author": "Gilson Terra",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gilsonterra/exemplos-livro-refatoracao/issues"
+  },
+  "homepage": "https://github.com/gilsonterra/exemplos-livro-refatoracao#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "jest": "^26.4.2"
+  }
+}
